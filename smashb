@@ -1,0 +1,696 @@
+int pantalla = 0;
+int turno = 1;
+int x = 0;
+int y = 0;
+int PJ1x = 30;
+int PJ1y = 250;
+int PJ2x = 1150;
+int PJ2y = 0;
+int IDpersonaje = 0;
+int IDpersonaje1 = -1;
+int IDpersonaje2 = -1;
+int xataque=0;
+int yataque = 50;
+int xvida = 990;
+int yvida = 10;
+float[] x1= new float[1500];
+float[] y1= new float[1500];
+float[] dx= new float[1500];
+float[] dy= new float[1500];
+Personaje Cholo;
+Personaje Dragon;
+Personaje Lanza;
+Personaje Link;
+Personaje Mario;
+Personaje Pikachu;
+
+
+//Vida, ataque, defensa, dibujo
+ void setup()
+ {
+   frameRate(200);
+   
+  Cholo = new Personaje(100, 20, 20,0);
+  Dragon = new Personaje( 100, 20, 20, 1);
+  Lanza = new Personaje( 100, 20, 20, 2);
+  Link = new Personaje(100, 20, 20, 3);
+  Mario = new Personaje (100, 20, 20, 4);
+  Pikachu = new Personaje(100, 20,20,5);
+
+  
+  size(1500,800);
+  background(185);
+  for(int i=0; i<1500;i++){
+  x1[i] = random(745,765);
+  y1[i] = random(300,350);
+  dx[i] = random(-5,5);
+  dy[i] = random(-5,5);
+}
+  
+}
+
+void draw()
+{
+  if(pantalla == 0)
+    {
+      if(key==0)
+      {
+        inicio();
+        String s = "Super Smas Bros";
+        fill(255,0,0);
+        textSize(80);
+        text(s,440,380);
+
+        String b = "Presiona Enter";
+        fill(255);
+        textSize(50);
+        text(b,570,450);
+       
+      }
+      else
+      {
+        key=0;
+        pantalla=1;
+      }
+    }
+    if(pantalla==1)
+    {
+      background(#C3F5EA);
+       
+      for(int i=0; i<=width; i+=80)
+     {
+      pushMatrix();
+      translate(i,640);  
+      noStroke();
+      
+      fill(#A57D16);
+      rect(0,0,80,80);
+      fill(#39C441);  
+      rect(0,0,80,30);
+      rect(10,30,10,10);
+      rect(40,30,20,20);
+      rect(30,30,10,10);
+      rect(70,30,10,30);
+      
+      fill(#674D09);
+      rect(10,50,20,20);
+      rect(30,60,10,10);
+      rect(60,70,20,10);
+      popMatrix();
+     }
+
+     for(int i=0; i<=width; i+=80)
+     {
+     pushMatrix();
+     translate(i,720);
+     fill(#A57D16);
+     rect(0,0,80,80);
+     fill(#674D09);
+     rect(10,10,50,10);
+     rect(10,30,10,10);
+     rect(40,30,20,20);
+     rect(30,30,10,10);
+     rect(70,30,10,30);
+     rect(10,50,20,20);
+     rect(30,60,10,10);
+     rect(60,70,20,10);
+     popMatrix();
+     }
+     noStroke();
+     fill(20,139,34);
+     rect(x,y,250,450);
+      
+      
+      textSize(20); 
+      fill(0);
+      text("Desliza con A y S \nSelecciona con ENTER\nAtaques con letras Z", 600,550);
+      Cholo.Dibujar(0,0,0,0);
+      Dragon.Dibujar(1, 250,0,0);
+      Lanza.Dibujar(2, 250,0,0);
+      Link.Dibujar(3, 255,0, 0);
+      Mario.Dibujar(4, 250,0, 0);
+      Pikachu.Dibujar(5,250,0,0);
+      if(IDpersonaje1==-1)
+      {
+        text("Jugador 1", -600, 520);
+      }
+      if(IDpersonaje2==-2)
+      {
+        text("Jugador 2", -600, 520);
+      }
+    }
+    if(pantalla==2)
+    {
+      background(#C3F5EA);
+      for(int i=0; i<=width; i+=80)
+{
+ pushMatrix();
+ translate(i,640);  
+ noStroke();
+ fill(#A57D16);
+   rect(0,0,80,80);
+ fill(#39C441);  
+  rect(0,0,80,30);
+  rect(10,30,10,10);
+  rect(40,30,20,20);
+  rect(30,30,10,10);
+  rect(70,30,10,30);
+ fill(#674D09);
+  rect(10,50,20,20);
+  rect(30,60,10,10);
+  rect(60,70,20,10);
+ popMatrix();
+}
+
+for(int i=0; i<=width; i+=80)
+{
+pushMatrix();
+ translate(i,720);  
+ noStroke();
+ fill(#A57D16);
+   rect(0,0,80,80);
+ fill(#674D09);
+   rect(10,10,50,10);
+   rect(10,30,10,10);
+   rect(40,30,20,20);
+   rect(30,30,10,10);
+   rect(70,30,10,30);
+   rect(10,50,20,20);
+   rect(30,60,10,10);
+   rect(60,70,20,10);
+popMatrix();
+}
+      Cholo.Dibujarvida();
+      Dragon.Dibujarvida();
+      Cholo.Dibujar(IDpersonaje1,PJ1x,PJ1y,1);
+      Dragon.Dibujar(IDpersonaje2,PJ2x,PJ2y,2);
+      if(Cholo.vida>0 && Dragon.vida>0)
+      {
+        if(key=='z')
+        {
+          if(turno==1) Cholo.ataque();
+          if(turno==2) Dragon.ataque();
+        }
+       
+      }
+      if(Cholo.vida<=0)
+      {
+        textSize(100); 
+        fill(255,0,0);
+        text("Game Over",-700,-100);
+        text("Ganador jugador 2",-900,100);
+        textSize(32);
+        fill(0);
+        text("Para volver a jugar presione R", -700,250);
+      }
+      if(Dragon.vida<=0)
+      {
+        textSize(100); 
+        fill(255,0,0);
+        text("Game Over",-700,-100);
+        text("Ganador: jugador 1",-900,100);
+        textSize(32);
+        fill(0);
+        text("Para volver a jugar presione R", -700, 250);
+      }
+    }
+}
+
+class Personaje 
+{
+  int vida;
+  int ataque;
+  int defensa;
+  int dibujo;
+  int Jugador;
+  
+  Personaje(int vida_, int ataque_,int defensa_, int dibujo_)
+  {
+    vida = vida_;
+    ataque = ataque_;
+    defensa = defensa_;
+    dibujo = dibujo_;
+  }
+
+void Dibujar(int dibujo_,int x,int y, int jugador)
+{
+  Jugador=jugador;
+  translate(x,y);
+ switch(dibujo_)
+ {
+   case 0: //(cholo)
+ 
+ noStroke();
+ fill(#DBA540);
+ rect(100,40,140,100);
+ rect(120,20,100,20);
+ rect(80,60,20,40);
+ rect(20,220,40,60);
+ rect(60,240,20,20);
+ rect(220,220,40,60);
+ rect(200,240,20,20);
+ rect(80,340,40,20);
+ rect(140,340,40,20);
+
+ fill(#3C42CE);
+ rect(120,40,120,40);
+ rect(60,40,60,20);
+ rect(80,20,20,20);
+ rect(60,140,80,60);
+ rect(60,200,60,40);
+ rect(20,180,20,40);
+ rect(40,160,20,60);
+ rect(80,120,20,20);
+ rect(80,240,20,20);
+ rect(140,140,20,20);
+ rect(160,160,80,20);
+ rect(180,180,80,40);
+ rect(180,220,40,20);
+ rect(180,140,20,20); 
+
+ fill(#FAD77E);
+ rect(60,260,60,40);
+ rect(140,260,60,40);
+ rect(120,260,20,20);
+
+ fill(0);
+ rect(140,80,40,20);
+ rect(200,80,40,20);
+ rect(160,120,60,20);
+ rect(160,140,20,20);
+ rect(200,140,20,20);
+ rect(60,360,60,40);
+ rect(140,360,60,40);
+ rect(40,380,20,20);
+ rect(200,380,20,20);
+
+ fill(255);
+ rect(80,40,20,20);
+ rect(120,60,20,20);
+ rect(140,40,40,20);
+ rect(180,60,40,20);
+ rect(220,40,20,20);
+ rect(120,200,60,60);
+ rect(140,160,20,20);
+ rect(140,180,40,20);
+ rect(100,240,20,20);
+ rect(180,240,20,20);
+ rect(60,300,60,40);
+ rect(140,300,60,40);
+ rect(40,300,20,20);
+ rect(200,300,20,20);
+break;
+   
+   case 1: //(dragon)
+   
+  noStroke();
+  fill(#85C44B);
+  rect(160,60,100,20);
+  rect(140,80,140,20);
+  rect(120,100,180,120);
+  rect(100,140,20,80);
+  rect(300,160,20,60);
+  rect(100,220,80,20);
+  rect(80,240,200,100);
+  rect(60,300,20,20);
+  rect(20,320,60,20);
+ 
+  fill(255);
+  rect(180,120,20,80); 
+  rect(200,100,40,120);
+  rect(260,100,20,120);
+  rect(280,120,20,80);
+  rect(240,220,20,20);
+  rect(180,280,120,60); 
+  rect(200,260,80,20);
+
+  fill(#F05024);
+  rect(180,20,20,20);
+  rect(160,40,60,20);
+  rect(80,60,80,20);
+  rect(100,80,40,20);
+  rect(60,120,60,20);
+  rect(80,140,20,20);
+  rect(60,180,40,20);
+  rect(60,280,20,20);
+  rect(40,300,20,20);
+  rect(100,240,60,40);
+  rect(120,220,20,20);
+  rect(100,280,40,20);
+  rect(160,300,40,20);
+  rect(140,320,80,20);
+  rect(280,320,60,20);
+
+  fill(0);
+  rect(220,120,20,80);
+  rect(260,120,20,80);
+ break;
+   
+   case 2: //(lanza)
+    
+  fill(255);
+  rect(40,100,40,80);
+  rect(60,80,20,20);
+  rect(80,60,20,120);
+  rect(100,60,20,60);
+  rect(120,40,60,80);
+  rect(180,80,40,40);
+  rect(220,100,40,20);
+  rect(100,160,20,20);
+  rect(60,200,20,20);
+  rect(120,180,100,40);
+  rect(220,200,20,20);
+  rect(80,240,20,20);
+  rect(160,240,80,20);
+  rect(60,260,160,20);
+  rect(60,280,40,20);
+  rect(160,280,40,20);
+  rect(60,300,80,20);
+  rect(160,300,80,20);
+ 
+  fill(255,0,0);
+  rect(40,220,280,20);
+  rect(260,180,20,20);
+  rect(260,260,20,20);
+  rect(260,200,40,20);
+  rect(260,240,40,20);
+  
+  fill(#4B90C4);
+  rect(100,120,160,40);
+  rect(120,160,120,20);
+  rect(80,180,40,40);
+  rect(100,220,60,40);
+ 
+  fill(0);
+  rect(180,120,20,40);
+  rect(220,120,20,40);
+ break;
+  
+   case 3: //(link)
+   
+  noStroke();
+ fill(#A5F53E);
+ rect(100,60,20,40);
+ rect(120,40,120,40);
+ rect(240,60,20,40);
+ rect(80,200,40,20);
+ rect(140,120,20,20);
+ rect(200,120,20,20);
+ rect(160,220,60,20); 
+ rect(200,240,40,20);
+ rect(220,200,40,40);
+ rect(240,180,40,20);
+ rect(160,260,20,20);
+ rect(160,300,100,20);
+ rect(200,280,80,20);
+ rect(80,180,40,20);
+ 
+  fill(#B4792C);
+  rect(100,100,20,60);
+  rect(120,80,120,40);
+  rect(240,100,20,60);
+  rect(140,140,20,20);
+  rect(200,140,20,20); 
+  rect(160,180,40,20);
+  rect(40,200,100,20);
+  rect(20,220,120,100);
+  rect(140,220,20,20);
+  rect(100,340,60,20);
+  rect(140,320,20,20);
+  rect(160,240,40,20);
+  rect(160,280,40,20);
+  rect(180,260,80,20);
+  rect(200,320,60,20);
+  rect(260,200,20,20);
+  rect(280,160,20,80);
+  rect(300,200,20,60);
+
+ fill(#EAC06B);
+  rect(60,80,20,80);
+  rect(80,120,20,60);
+  rect(100,160,20,20);
+  rect(120,120,20,80);
+  rect(140,160,20,60);
+  rect(160,120,40,60);
+  rect(160,200,40,20);
+  rect(200,160,20,60);
+  rect(220,120,20,80);
+  rect(240,160,20,20);
+  rect(260,120,20,60);
+  rect(280,80,20,80);
+  rect(240,240,20,20);
+  rect(260,220,20,60);
+  rect(280,240,20,60);
+  rect(300,260,20,20);
+  rect(140,240,20,80);
+  rect(40,320,100,20);
+  rect(60,240,60,20);
+  rect(80,220,20,80);
+ break;
+   
+   case 4: //(mario)  
+  
+   noStroke();
+   fill(#F7C38E);
+   rect(20,220,60,60);
+   rect(80,240,20,20);
+   rect(80,80,20,40);
+   rect(100,120,140,40);
+   rect(120,80,20,20);
+   rect(140,60,80,60);
+   rect(220,80,40,40);
+   rect(260,100,20,20);
+   rect(220,240,20,20);
+   rect(240,220,40,60);
+
+   fill(#E8430C);
+   rect(60,80,20,60);
+   rect(80,120,20,20);
+   rect(80,60,60,20);
+   rect(100,80,20,40);
+   rect(120,100,20,20);
+   rect(20,200,60,20);
+   rect(60,180,20,20);
+   rect(80,160,40,60);
+   rect(80,220,20,20);
+   rect(60,300,60,40);
+   rect(20,320,40,20);
+   rect(140,160,40,40);
+   rect(180,160,20,20);
+   rect(180,60,20,40);
+   rect(180,120,80,20);
+   rect(200,180,60,40);
+   rect(220,220,20,20);
+   rect(260,200,20,20);
+   rect(200,300,60,40);
+   rect(260,320,20,20);
+
+   fill(#FAEDE8);
+   rect(100,20,100,20);
+   rect(80,40,180,20);
+   rect(120,160,20,40);
+   rect(120,200,80,20);
+   rect(180,180,20,20);
+   rect(80,280,60,20);
+   rect(80,260,160,20);
+   rect(180,280,60,20);
+   rect(100,220,120,40);
+
+   fill(#F1F525);
+   rect(120,220,20,20);
+   rect(180,220,20,20);
+  break;
+  
+  case 5:
+  //(pikachu)
+  noStroke();
+ 
+fill(#F7E857);
+rect(40,160,20,40);
+rect(60,120,140,180);
+rect(40,280,20,20);
+rect(60,300,40,20);
+rect(80,100,140,20);
+rect(160,80,40,20);
+rect(200,160,20,120);
+rect(220,200,20,60);
+rect(120,300,140,20);
+rect(200,320,40,20);
+rect(240,280,20,20);
+rect(220,140,20,20);
+rect(240,100,40,80);
+rect(260,80,20,20);
+rect(260,180,20,20);
+rect(280,80,40,40);
+rect(280,120,20,20);
+rect(280,160,40,40);
+
+fill(#000000);
+rect(100,80,60,20);
+rect(220,40,40,20);
+rect(160,60,180,20);
+rect(200,80,60,20);
+rect(320,80,20,20);
+rect(200,80,60,20);
+rect(220,100,20,40);
+rect(200,120,20,40);
+rect(220,160,20,40);
+rect(240,180,20,100);
+rect(200,280,20,20);
+rect(220,260,20,40);
+rect(240,180,20,100);
+rect(260,260,20,40);
+rect(100,160,20,20);
+rect(60,260,40,20);
+rect(100,240,40,20);
+
+fill(#AA740F);
+rect(180,200,60,20);
+rect(180,240,60,20);
+rect(260,200,40,60);
+rect(300,220,20,20);
+
+fill(255,0,0);
+rect(120,180,20,20);
+break;
+    }
+  }
+  
+  void Dibujarvida()
+  {
+    int ps=vida;
+    if(Jugador==1)
+    {
+      fill(255,0,0);
+      rect(10,10,ps*5,50);
+    }
+    if(Jugador==2)
+    {
+      fill(255,0,0);
+      rect(xvida,yvida,ps*5,50);
+    }
+  }
+  
+  void ataque()
+  {
+    int danio=20;        
+  
+    if(Jugador==1)
+    {
+      fill(0,250,0);
+      ellipse(xataque-700, 200, 100, 100);
+      xataque = xataque+5;
+      if(xataque==800)
+      {
+        xvida=xvida+ danio*5;
+        Dragon.vida=Dragon.vida-danio;
+        xataque = 0;
+        turno=2;
+        key = 0;
+      }
+    }
+    
+    if(Jugador==2)
+    {
+      fill(0,255,0);
+      ellipse(xataque, 200, 100, 100);
+      xataque = xataque-5;
+      if(xataque==-950)
+      {
+        key = 0;
+        turno=1;
+        Cholo.vida=Cholo.vida-danio;
+        xataque = 0;
+      }
+    }
+  }
+ }
+
+void inicio()
+{
+noStroke();  
+ background(0);
+
+
+ for( int i=0; i<400; i++)
+ {
+    if(x1[i]>1500){
+     dx[i]=dx[i]*-1;
+    }
+    if(x1[i]<0){
+     dx[i]=dx[i]*-1;
+    }
+     if(y1[i]>800){
+     dy[i]=dy[i]*-1;
+    }
+     if(y1[i]<0){
+     dy[i]=dy[i]*-1;
+     }
+    fill(random(0,255),random(0,255),random(0,255));
+    x1[i] += dx[i];
+    y1[i] += dy[i];
+    ellipse(x1[i],y1[i],10,10);
+    }
+ }  
+  
+
+void keyPressed()
+{
+  
+  if(pantalla==1)
+  {
+    if(IDpersonaje >=0 && IDpersonaje<=5)
+    {
+      if(key=='s')
+      {
+        if(IDpersonaje==5) return;
+        x=x+250;
+        IDpersonaje = IDpersonaje+1;
+        key=0;
+      }
+      if(key=='a')
+      {
+        if(IDpersonaje==0) return;
+        x=x-250;
+        IDpersonaje = IDpersonaje-1;
+        key=0;
+      }
+   
+      if(IDpersonaje1==-1)
+      {
+        if(key=='\n')
+        {
+          IDpersonaje1 = IDpersonaje;
+          IDpersonaje2 = -2;
+          IDpersonaje = 0;
+          x = 0;
+          y = 0;
+          key = 0;          
+        }
+      }
+      if(IDpersonaje2==-2)
+      {       
+        if(key=='\n')
+        {
+          IDpersonaje2 = IDpersonaje;
+          IDpersonaje = 0;
+          x = 0;
+          y = 0;
+          key = 0;  
+          pantalla = 2;
+        }
+      }
+    }
+ }
+  if(pantalla==2)
+  {
+    if(Cholo.vida<=0 || Dragon.vida<=0)
+    {
+      if(key=='r')
+      {
+        pantalla=0;
+        
+      }
+    }
+  }
+}
